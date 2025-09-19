@@ -1,0 +1,18 @@
+{
+  "name": "nodejs_codes",
+  "version": "1.0.0",
+  "description": "Just for Practice Purpose",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
+  },
+  "author": "Abdul Wahab",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  },
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
