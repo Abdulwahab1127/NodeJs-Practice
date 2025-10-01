@@ -6,22 +6,28 @@
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* Body background */
+/* Keep header normal */
 body {
     background: linear-gradient(135deg, #d2efe4, #a2babd);
 }
 
-/* Centering the form */
-main {
+/* Center only the login card */
+.login-page {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 60px 20px;
-    min-height: calc(100vh - 80px); /* adjust if header is taller */
+    padding: 60px 20px; /* spacing from header */
+    min-height: calc(100vh - 80px); /* adjust for header height */
 }
 
-/* Card style form */
-.product-form {
+/* Main container */
+.login-container {
+    width: 100%;
+    max-width: 400px;
+}
+
+/* Card style login form */
+.login-card {
     background: rgba(255, 255, 255, 0.95);
     padding: 40px 30px;
     border-radius: 15px;
@@ -29,18 +35,15 @@ main {
     display: flex;
     flex-direction: column;
     gap: 20px;
-    width: 100%;
-    max-width: 500px;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.product-form:hover {
+.login-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
 }
 
-/* Form title (optional) */
-.product-form h2 {
+.login-card h2 {
     text-align: center;
     color: #333;
     margin-bottom: 15px;
@@ -58,17 +61,15 @@ main {
     color: #555;
 }
 
-.form-control input,
-.form-control textarea {
+.form-control input {
     padding: 12px 15px;
-    border: 1px solid #a1a1a1;
+    border: 1px solid #ccc;
     border-radius: 10px;
     font-size: 1rem;
     transition: all 0.3s ease;
 }
 
-.form-control input:focus,
-.form-control textarea:focus {
+.form-control input:focus {
     border-color: #2575fc;
     box-shadow: 0 0 8px rgba(37, 117, 252, 0.5);
     outline: none;
@@ -94,11 +95,11 @@ main {
 
 /* Responsive */
 @media (max-width: 480px) {
-    .product-form {
+    .login-card {
         padding: 30px 20px;
     }
 
     .btn {
-        font-size: 0.95rem;
+        font-size: 0.9rem;
     }
 }
