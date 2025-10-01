@@ -1,24 +1,27 @@
 <%- include('../includes/head.ejs') %>
-    </head>
+<link rel="stylesheet" href="/css/orders.css">
+</head>
 
-    <body>
-        <%- include('../includes/navigation.ejs') %>
-        <main>
-            <% if (orders.length <= 0) { %>
-                <h1>Nothing there!</h1>
-            <% } else { %>
-                <ul>
-                    <% orders.forEach(order => { %>
-                        <li>
-                            <h1># <%= order._id %></h1>
-                            <ul>
-                                <% order.items.forEach(product => { %>
-                                    <li><%= product.title %> (<%= product.quantity %>)</li>
-                                <% }); %>
-                            </ul>
-                        </li> 
+<body>
+    <%- include('../includes/navigation.ejs') %>
+    <main>
+        <% if (orders.length <= 0) { %>
+            <h1>Nothing there!</h1>
+        <% } else { %>
+            <% orders.forEach(order => { %>
+                <div class="order-card">
+                    <h2>Order #<%= order._id %></h2>
+                    <% order.items.forEach(item => { %>
+                    <div class="order-item">
+                        <img src="<%= item.product.imageUrl %>" alt="<%= item.product.title %>" width="100">
+                        <h3><%= item.product.title %></h3>
+                        <p>Price: $<%= item.product.price %></p>
+                        <p>Quantity: <%= item.quantity %></p>
+                    </div>
                     <% }); %>
-                </ul>
-            <% } %>
-        </main>
-        <%- include('../includes/end.ejs') %>
+                </div>
+                <% }); %>
+
+        <% } %>
+    </main>
+<%- include('../includes/end.ejs') %>

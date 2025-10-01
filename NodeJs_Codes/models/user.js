@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const order = require('./order');
 
 const userSchema = new Schema({
   name: {
@@ -20,9 +21,7 @@ const userSchema = new Schema({
   }
 });
 
-
-module.exports = mongoose.model('User', userSchema);
-
+// Add method to the user schema to add a product to the cart
 userSchema.methods.addToCart = function(product) {
   const cartProductIndex = this.cart.items.findIndex(cp => {
     return cp.productId.toString() === product._id.toString();
@@ -40,6 +39,73 @@ userSchema.methods.addToCart = function(product) {
   this.cart = { items: updatedCartItems };
   return this.save();
 }
+
+// Add method to get cart items with product details populated
+userSchema.methods.getCart = function() {
+  return this.model('Product').find({ _id: { $in: this.cart.items.map(i => i.productId) } })
+    .then(products => {
+      return products.map(p => {
+        return {
+          ...p._doc,
+          quantity: this.cart.items.find(i => i.productId.toString() === p._id.toString()).quantity
+        };
+      });
+    });
+}
+
+// Add method to remove an item from the cart
+userSchema.methods.deleteItemFromCart = function(productId) {
+  const updatedCartItems = this.cart.items.filter(item => {
+    return item.productId.toString() !== productId.toString();
+  });
+  this.cart.items = updatedCartItems;
+  return this.save();
+}
+
+// Add method to add an order
+userSchema.methods.addOrder = function() {
+  const Order = this.model('Order');
+
+  return this.getCart().then(products => {
+    const orderItems = products.map(p => {
+      return {
+        product: {
+          title: p.title,
+          price: p.price,
+          imageUrl: p.imageUrl,
+          description: p.description
+        },
+        quantity: p.quantity
+      };
+    });
+
+    const order = new Order({
+      items: orderItems,
+      user: {
+        userId: this._id,
+        name: this.name
+      }
+    });
+
+    return order.save().then(() => {
+      this.cart = { items: [] };
+      return this.save();
+    });
+  });
+};
+
+
+
+
+// Add method to get user orders
+userSchema.methods.getOrders = function() {
+  const Order = this.model('Order');
+  return Order.find({ 'user.userId': this._id });
+}
+
+
+
+module.exports = mongoose.model('User', userSchema);
 
 
 
