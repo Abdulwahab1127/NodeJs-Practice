@@ -1,19 +1,27 @@
 {
-  "name": "nodejs_codes",
+  "name": "nodejs-complete-guide",
   "version": "1.0.0",
-  "description": "Just for Practice Purpose",
+  "description": "Complete Node.js Guide",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon app.js",
-    "restart": "nodemon"
+    "start-server": "node app.js"
   },
-  "author": "Abdul Wahab",
+  "author": "Maximilian Schwarzmüller",
   "license": "ISC",
   "devDependencies": {
-    "nodemon": "^3.1.10"
+    "nodemon": "^1.18.3"
   },
   "dependencies": {
-    "express": "^5.1.0"
+    "body-parser": "^1.18.3",
+    "ejs": "^2.6.1",
+    "express": "^4.16.3",
+    "express-handlebars": "^3.0.0",
+    "mongodb": "^6.20.0",
+    "mongoose": "^8.18.3",
+    "mysql2": "^3.15.0",
+    "pug": "^2.0.3",
+    "sequelize": "^6.37.7"
   }
 }
