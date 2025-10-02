@@ -1,32 +1,35 @@
 
+const User = require('../models/user');
 
 exports.getlogin = (req, res, next) => {
-    // Check if user is already logged in via cookie
-    const cookies = req.get('Cookie');
-    let isLoggedIn = false;
-    
-    if (cookies) {
-        const loggedInCookie = cookies.split(';').find(cookie => cookie.trim().startsWith('loggedIn='));
-        if (loggedInCookie) {
-            isLoggedIn = loggedInCookie.split('=')[1] === 'true';
-        }
-    }
-    
     res.render('auth/login', {
         path: '/login', 
         pageTitle: 'Login', 
-        isAuthenticated: isLoggedIn
+        isAuthenticated: req.session.isLoggedIn
     });
 };
 
 exports.postLogin = (req, res, next) => {
-    // Set cookie for authentication
-    res.setHeader('Set-Cookie', 'loggedIn=true; HttpOnly; Max-Age=3600'); // Expires in 1 hour
-    res.redirect('/');   // Redirect to home page
+    // Find the dummy user and store in session
+    User.findById('68dc2185bb4ee2e5645ac7fe')
+        .then(user => {
+            req.session.isLoggedIn = true;
+            req.session.user = user;
+            req.session.save((err) => {
+                if (err) {
+                    console.log(err);
+                }
+                res.redirect('/');
+            });
+        })
+        .catch(err => {
+            console.log(err);
+            res.redirect('/login');
+        });
 };
 
 exports.postLogout = (req, res, next) => {
-    // Clear the authentication cookie
-    res.setHeader('Set-Cookie', 'loggedIn=; HttpOnly; Max-Age=0'); // Expire immediately
-    res.redirect('/');
+    req.session.destroy(() => {
+        res.redirect('/');
+    });
 };

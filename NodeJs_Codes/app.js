@@ -1,13 +1,22 @@
 const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
-
+const session = require('express-session');
 const errorController = require('./controllers/error');
-// const  {mongoConnect}  = require('./util/database');
+require('dotenv').config();
+
+const MongoDBStore = require('connect-mongodb-session')(session); // For storing sessions in MongoDB
 
 const mongoose = require('mongoose');
 
+const MONGODB_URI = process.env.MONGODB_URI;
+
+
 const app = express();
+const store = new MongoDBStore({
+  uri: MONGODB_URI,
+  collection: 'sessions'
+});
 
 app.set('view engine', 'ejs');
 app.set('views', 'views');
@@ -22,33 +31,22 @@ const User = require('./models/user');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Middleware to attach a user to each request
-app.use((req, res, next) => {
-  User.findById('68dc2185bb4ee2e5645ac7fe')
-    .then(user => {
-    req.user = user;
-      next();
-    
-  })
-  .catch(err => console.log(err));
-  
-});
+app.use(session({
+  secret: 'mysecret',
+  resave: false,
+  saveUninitialized: false,
+  store: store
+}));
 
-// Middleware to check authentication status from cookies
+// Middleware to attach user from session
 app.use((req, res, next) => {
-  const cookies = req.get('Cookie');
-  let isLoggedIn = false;
-  
-  if (cookies) {
-    const loggedInCookie = cookies.split(';').find(cookie => cookie.trim().startsWith('loggedIn='));
-    if (loggedInCookie) {
-      isLoggedIn = loggedInCookie.split('=')[1] === 'true';
-    }
+  if (req.session.user) {
+    req.user = req.session.user;
   }
-  
-  req.isAuthenticated = isLoggedIn;
   next();
 });
+
+// Authentication is now handled directly in controllers via req.session.isLoggedIn
 
 // Routes
 
@@ -60,7 +58,7 @@ app.use(errorController.get404);
 
 mongoose
   .connect(
-    'mongodb+srv://abdulwahab:wahab%40123@clusterbackend.jbyqk33.mongodb.net/ShopDB?retryWrites=true&w=majority&appName=ClusterBackend'
+    MONGODB_URI
   )
 
   .then(result =>{
