@@ -1,10 +1,25 @@
 <%- include('../includes/head.ejs') %>
     <link rel="stylesheet" href="/css/cart.css">
+    <link rel="stylesheet" href="/css/error-messages.css">
     </head>
 
     <body>
         <%- include('../includes/navigation.ejs') %>
         <main>
+            <!-- Flash Messages Display -->
+            <% if (errorMessage) { %>
+                <div class="error-message">
+                    <%= errorMessage %>
+                    <button class="message-close" onclick="this.parentElement.remove()" aria-label="Close error message">&times;</button>
+                </div>
+            <% } %>
+            
+            <% if (successMessage) { %>
+                <div class="success-message">
+                    <%= successMessage %>
+                    <button class="message-close" onclick="this.parentElement.remove()" aria-label="Close success message">&times;</button>
+                </div>
+            <% } %>
             <% if (products.length > 0) { %>
                 <ul class="cart__item-list">
                     <% products.forEach(p => { %>
@@ -14,12 +29,14 @@
                             <h2>Quantity: <%= p.quantity %></h2>
                             <form action="/cart-delete-item" method="POST">
                                 <input type="hidden" value="<%= p._id %>" name="productId">
+                                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                                 <button class="btn danger" type="submit">Delete</button>
                             </form>
                         </li>
                     <% }) %>
                 </ul>
                 <form class="cart__order-form" action="/create-order" method="POST">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                     <button class="submit-order" type="submit">Order Now</button>
                 </form>
             <% } else { %>

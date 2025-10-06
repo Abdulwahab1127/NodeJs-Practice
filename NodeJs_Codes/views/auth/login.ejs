@@ -1,5 +1,6 @@
 <%- include('../includes/head.ejs') %>
 <link rel="stylesheet" href="/css/auth.css">
+<link rel="stylesheet" href="/css/error-messages.css">
 </head>
 
 <body>
@@ -7,17 +8,39 @@
 
     <div class="login-page">
         <main class="login-container">
+            <!-- Flash Messages Display -->
+            <% if (errorMessage) { %>
+                <div class="error-message">
+                    <%= errorMessage %>
+                    <button class="message-close" onclick="this.parentElement.remove()" aria-label="Close error message">&times;</button>
+                </div>
+            <% } %>
+            
+            <% if (successMessage) { %>
+                <div class="success-message">
+                    <%= successMessage %>
+                    <button class="message-close" onclick="this.parentElement.remove()" aria-label="Close success message">&times;</button>
+                </div>
+            <% } %>
+            
             <form class="login-card" action="/login" method="POST">
                 <h2>Login</h2>
                 <div class="form-control">
                     <label for="email">Email</label>
-                    <input type="email" name="email" id="email" required>
+                    <input type="email" name="email" id="email" required placeholder="Enter your email">
                 </div>
                 <div class="form-control">
                     <label for="password">Password</label>
-                    <input type="password" name="password" id="password" required>
+                    <input type="password" name="password" id="password" required placeholder="Enter your password">
                 </div>
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                 <button class="btn" type="submit">Login</button>
+                
+                <!-- Additional helpful links -->
+                <div class="login-footer">
+                    <p class="info-text">Don't have an account? <a href="/signup" class="auth-link">Sign up here</a></p>
+                    <p><a href="/forgot-password" class="auth-link">Forgot Password?</a></p>
+                </div>
             </form>
         </main>
     </div>

@@ -3,7 +3,11 @@ const Schema = mongoose.Schema;
 const order = require('./order');
 
 const userSchema = new Schema({
-  
+  name: {
+    type: String,
+    required: true,
+    default: 'Anonymous User'
+  },
   email: {
     type: String,
     required: true
@@ -84,7 +88,7 @@ userSchema.methods.addOrder = function() {
       items: orderItems,
       user: {
         userId: this._id,
-        name: this.name
+        name: this.name || this.email || 'Anonymous User'
       }
     });
 

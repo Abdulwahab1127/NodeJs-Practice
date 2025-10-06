@@ -11,12 +11,18 @@ const mongoose = require('mongoose');
 
 const MONGODB_URI = process.env.MONGODB_URI;
 
+const csrf = require('csurf');
+
+const flash = require('connect-flash');
+
 
 const app = express();
 const store = new MongoDBStore({
   uri: MONGODB_URI,
   collection: 'sessions'
 });
+
+const csrfProtection = csrf();
 
 app.set('view engine', 'ejs');
 app.set('views', 'views');
@@ -31,12 +37,16 @@ const User = require('./models/user');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Session middleware
 app.use(session({
   secret: 'mysecret',
   resave: false,
   saveUninitialized: false,
   store: store
 }));
+
+app.use(csrfProtection); // CSRF protection middleware
+app.use(flash()); // Flash message middleware
 
 // Middleware to attach user from session
 app.use((req, res, next) => {
@@ -46,7 +56,13 @@ app.use((req, res, next) => {
   next();
 });
 
-// Authentication is now handled directly in controllers via req.session.isLoggedIn
+
+app.use((req, res, next) => {
+  res.locals.isAuthenticated = req.session.isLoggedIn;
+  res.locals.csrfToken = req.csrfToken();
+  next();
+});
+
 
 // Routes
 

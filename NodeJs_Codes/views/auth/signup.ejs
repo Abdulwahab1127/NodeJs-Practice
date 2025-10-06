@@ -1,5 +1,6 @@
 <%- include('../includes/head.ejs') %>
 <link rel="stylesheet" href="/css/auth.css">
+<link rel="stylesheet" href="/css/error-messages.css">
 </head>
 
 <body>
@@ -7,25 +8,46 @@
 
     <div class="login-page">
         <main class="login-container">
+            <!-- Flash Messages Display -->
+            <% if (errorMessage) { %>
+                <div class="error-message">
+                    <%= errorMessage %>
+                    <button class="message-close" onclick="this.parentElement.remove()" aria-label="Close error message">&times;</button>
+                </div>
+            <% } %>
+            
+            <% if (successMessage) { %>
+                <div class="success-message">
+                    <%= successMessage %>
+                    <button class="message-close" onclick="this.parentElement.remove()" aria-label="Close success message">&times;</button>
+                </div>
+            <% } %>
+            
             <form class="login-card" action="/signup" method="POST">
-                <h2>Signup</h2>
+                <h2>Create Account</h2>
 
                 <div class="form-control">
-                    <label for="email">E-Mail</label>
-                    <input type="email" name="email" id="email" required>
+                    <label for="email">Email Address</label>
+                    <input type="email" name="email" id="email" required placeholder="Enter your email">
                 </div>
 
                 <div class="form-control">
                     <label for="password">Password</label>
-                    <input type="password" name="password" id="password" required>
+                    <input type="password" name="password" id="password" required placeholder="Minimum 6 characters">
                 </div>
 
                 <div class="form-control">
                     <label for="confirmPassword">Confirm Password</label>
-                    <input type="password" name="confirmPassword" id="confirmPassword" required>
+                    <input type="password" name="confirmPassword" id="confirmPassword" required placeholder="Re-enter your password">
                 </div>
 
-                <button class="btn" type="submit">Signup</button>
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <button class="btn" type="submit">Create Account</button>
+                
+                <!-- Additional helpful links -->
+                <div class="login-footer">
+                    <p class="info-text">Already have an account? <a href="/login" class="auth-link">Login here</a></p>
+                </div>
             </form>
         </main>
     </div>

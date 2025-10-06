@@ -93,6 +93,94 @@ body {
     transform: translateY(-2px);
 }
 
+/* Login Footer Styling */
+.login-footer {
+    margin-top: 20px;
+    text-align: center;
+    padding-top: 15px;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.login-footer p {
+    margin: 8px 0;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.auth-link {
+    color: #2575fc;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.auth-link:hover {
+    color: #1557b0;
+    text-decoration: underline;
+}
+
+/* Enhanced input placeholders */
+.form-control input::placeholder {
+    color: #aaa;
+    font-style: italic;
+}
+
+.form-control input:focus::placeholder {
+    color: transparent;
+}
+
+/* Error message positioning for login */
+.login-container .error-message {
+    margin-bottom: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(238, 90, 82, 0.25);
+}
+
+/* Success message for login (for future use) */
+.login-container .success-message {
+    margin-bottom: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(64, 192, 87, 0.25);
+}
+
+/* Enhanced form validation states */
+.form-control input.error {
+    border-color: #ff5252;
+    box-shadow: 0 0 0 2px rgba(255, 82, 82, 0.2);
+}
+
+.form-control input.success {
+    border-color: #4caf50;
+    box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+}
+
+/* Loading state for button */
+.btn.loading {
+    position: relative;
+    color: transparent;
+}
+
+.btn.loading::after {
+    content: "";
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    top: 50%;
+    left: 50%;
+    margin-left: -8px;
+    margin-top: -8px;
+    border: 2px solid #ffffff;
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
 /* Responsive */
 @media (max-width: 480px) {
     .login-card {
@@ -101,5 +189,14 @@ body {
 
     .btn {
         font-size: 0.9rem;
+    }
+    
+    .login-footer p {
+        font-size: 0.85rem;
+    }
+    
+    .login-container .error-message {
+        margin: 0 10px 20px 10px;
+        font-size: 13px;
     }
 }
