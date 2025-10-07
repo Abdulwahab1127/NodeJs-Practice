@@ -1,0 +1,43 @@
+<%- include('../includes/head.ejs') %>
+<link rel="stylesheet" href="/css/auth.css">
+<link rel="stylesheet" href="/css/error-messages.css">
+</head>
+
+<body>
+    <%- include('../includes/navigation.ejs') %>
+
+    <div class="login-page">
+        <main class="login-container">
+            <form class="login-card" action="/reset" method="POST">
+                <h2>Reset</h2>
+
+                <!-- Flash Messages -->
+                <% if (errorMessage) { %>
+                    <div class="error-message">
+                        <%= errorMessage %>
+                        <button class="message-close" onclick="this.parentElement.remove()" aria-label="Close error message">&times;</button>
+                    </div>
+                <% } %>
+
+                <% if (successMessage) { %>
+                    <div class="success-message">
+                        <%= successMessage %>
+                        <button class="message-close" onclick="this.parentElement.remove()" aria-label="Close success message">&times;</button>
+                    </div>
+                <% } %>
+
+                <!-- Email Field -->
+                <div class="form-control">
+                    <label for="email">Email</label>
+                    <input type="email" name="email" id="email" required placeholder="Enter your email">
+                </div>
+                <!-- CSRF Token -->
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+                <!-- Submit Button -->
+                <button class="btn" type="submit">Reset Password</button>
+            </form>
+        </main>
+    </div>
+
+<%- include('../includes/end.ejs') %>

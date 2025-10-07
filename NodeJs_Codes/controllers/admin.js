@@ -30,7 +30,7 @@ exports.postAddProduct = (req, res, next) => {
 
 // /admin/products => GET Shows all products in admin page
 exports.getProducts = (req, res, next) => {
-  Product.find()
+  Product.find({ userId: req.session.user._id }) // Fetch only products created by the logged-in user
   // .select('title price imageUrl') // Select only specific fields to optimize data retrieval
   // .populate('userId', 'name') // Populate userId with user details, selecting only the name field
     // Product.fetchAll() --- IGNORE ---
@@ -79,6 +79,10 @@ exports.postEditProduct = (req, res, next) => {
   Product.findById(prodId)
   .then(
     product => {
+      if(product.userId.toString() !== req.session.user._id.toString()) { 
+        req.flash('error', 'Sorry, you are not authorized to edit this product.');
+        return res.redirect('/admin/products');
+      }
       // If no product is found, redirect to admin products page
       if (!product) {
         console.log('Product not found!');
@@ -89,10 +93,9 @@ exports.postEditProduct = (req, res, next) => {
       product.price = price;
       product.description = description;
       product.imageUrl = imageUrl;
-      return product.save(); // Return the updated product to the next then() block
+      return product.save() .then(() => res.redirect('/admin/products')); // Return the updated product to the next then() block
     }
   )   
-  .then(() => res.redirect('/admin/products'))
   .catch(err => console.log(err));
 };
 
@@ -102,10 +105,10 @@ exports.postEditProduct = (req, res, next) => {
 exports.postDeleteProduct = (req, res, next) => {
   const prodId = req.body.productId;
 
-  Product.findByIdAndDelete(prodId)
+  Product.deleteOne({ _id: prodId, userId: req.session.user._id }) // Ensure only the owner can delete
     .then(() => {
       console.log('DESTROYED PRODUCT');
       res.redirect('/admin/products');
-    })
+    }) 
     .catch(err => console.log(err));
 };
