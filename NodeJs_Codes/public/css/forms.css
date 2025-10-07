@@ -92,6 +92,18 @@ main {
     transform: translateY(-2px);
 }
 
+/* Error field styling */
+.error-field {
+    border: 2px solid #e74c3c !important;
+    background-color: #ffeaea !important;
+    box-shadow: 0 0 8px rgba(231, 76, 60, 0.3) !important;
+}
+
+.error-field:focus {
+    border: 2px solid #c0392b !important;
+    box-shadow: 0 0 12px rgba(231, 76, 60, 0.5) !important;
+}
+
 /* Responsive */
 @media (max-width: 480px) {
     .product-form {

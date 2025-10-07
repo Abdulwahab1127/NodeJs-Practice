@@ -6,13 +6,16 @@ const courier = require("../util/courier");
 exports.getlogin = (req, res, next) => {
     const errorMessage = req.flash('error');
     const successMessage = req.flash('success');
+    const oldInputFlash = req.flash('oldInput');
+    const oldInput = oldInputFlash.length > 0 ? JSON.parse(oldInputFlash[0]) : {};
     
     res.render('auth/login', {
         path: '/login', 
         pageTitle: 'Login', 
         isAuthenticated: req.session.isLoggedIn,
         errorMessage: errorMessage.length > 0 ? errorMessage[0] : null,
-        successMessage: successMessage.length > 0 ? successMessage[0] : null
+        successMessage: successMessage.length > 0 ? successMessage[0] : null,
+        oldInput: oldInput
     });
 };
 
@@ -22,11 +25,13 @@ exports.postLogin = (req, res, next) => {
     // Validation
     if (!email || !password) {
         req.flash('error', 'Please fill in all fields');
+        req.flash('oldInput', JSON.stringify({ email: email || '' }));
         return res.redirect('/login');
     }
 
     if (!email.includes('@')) {
         req.flash('error', 'Please enter a valid email address');
+        req.flash('oldInput', JSON.stringify({ email: email }));
         return res.redirect('/login');
     }
 
@@ -34,12 +39,14 @@ exports.postLogin = (req, res, next) => {
         .then(user => {
             if (!user) {
                 req.flash('error', 'No account found with this email address. Please sign up first.');
+                req.flash('oldInput', JSON.stringify({ email: email }));
                 return res.redirect('/login');
             }
 
             return bcrypt.compare(password, user.password).then(isMatch => {
                 if (!isMatch) {
                     req.flash('error', 'Incorrect password. Please try again.');
+                    req.flash('oldInput', JSON.stringify({ email: email }));
                     return res.redirect('/login');
                 }
 
@@ -50,6 +57,7 @@ exports.postLogin = (req, res, next) => {
                     if (err) {
                         console.log('Session save error:', err);
                         req.flash('error', 'Login failed. Please try again.');
+                        req.flash('oldInput', JSON.stringify({ email: email }));
                         return res.redirect('/login');
                     }
                     req.flash('success', 'Successfully logged in! Welcome back.');
@@ -60,6 +68,7 @@ exports.postLogin = (req, res, next) => {
         .catch(err => {
             console.log('Login error:', err);
             req.flash('error', 'Something went wrong. Please try again later.');
+            req.flash('oldInput', JSON.stringify({ email: email }));
             res.redirect('/login');
         });
 };
@@ -68,13 +77,16 @@ exports.postLogin = (req, res, next) => {
 exports.getSignup = (req, res, next) => {
     const errorMessage = req.flash('error');
     const successMessage = req.flash('success');
+    const oldInputFlash = req.flash('oldInput');
+    const oldInput = oldInputFlash.length > 0 ? JSON.parse(oldInputFlash[0]) : {};
     
     res.render('auth/signup', {
         path: '/signup', 
         pageTitle: 'Signup', 
         isAuthenticated: req.session.isLoggedIn,
         errorMessage: errorMessage.length > 0 ? errorMessage[0] : null,
-        successMessage: successMessage.length > 0 ? successMessage[0] : null
+        successMessage: successMessage.length > 0 ? successMessage[0] : null,
+        oldInput: oldInput
     });
 };
 
@@ -84,21 +96,25 @@ exports.postSignup = (req, res, next) => {
     // Comprehensive validation
     if (!email || !password || !confirmPassword) {
         req.flash('error', 'Please fill in all fields');
+        req.flash('oldInput', JSON.stringify({ email: email || '' }));
         return res.redirect('/signup');
     }
 
     if (!email.includes('@') || email.length < 5) {
         req.flash('error', 'Please enter a valid email address');
+        req.flash('oldInput', JSON.stringify({ email: email }));
         return res.redirect('/signup');
     }
 
     if (password.length < 6) {
         req.flash('error', 'Password must be at least 6 characters long');
+        req.flash('oldInput', JSON.stringify({ email: email }));
         return res.redirect('/signup');
     }
 
     if (password !== confirmPassword) {
         req.flash('error', 'Passwords do not match. Please try again.');
+        req.flash('oldInput', JSON.stringify({ email: email }));
         return res.redirect('/signup');
     }
 
@@ -107,6 +123,7 @@ exports.postSignup = (req, res, next) => {
         .then(existingUser => {
             if (existingUser) {
                 req.flash('error', 'An account with this email already exists. Please log in instead.');
+                req.flash('oldInput', JSON.stringify({ email: email }));
                 return res.redirect('/signup');
             }
 
@@ -142,12 +159,14 @@ exports.postSignup = (req, res, next) => {
                 .catch(saveErr => {
                     console.log('User save error:', saveErr);
                     req.flash('error', 'Failed to create account. Please try again.');
+                    req.flash('oldInput', JSON.stringify({ email: email }));
                     res.redirect('/signup');
                 });
         })
         .catch(err => {
             console.log('Signup error:', err);
             req.flash('error', 'Something went wrong. Please try again later.');
+            req.flash('oldInput', JSON.stringify({ email: email }));
             res.redirect('/signup');
         });
 };
