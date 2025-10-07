@@ -1,6 +1,7 @@
 
 const User = require('../models/user');
 const bcrypt = require('bcryptjs');
+const courier = require("../util/courier");
 
 exports.getlogin = (req, res, next) => {
     const errorMessage = req.flash('error');
@@ -121,8 +122,22 @@ exports.postSignup = (req, res, next) => {
                     return newUser.save();
                 })
                 .then(result => {
-                    req.flash('success', 'Account created successfully! Please log in with your credentials.');
+                    req.flash('success', 'Account created successfully! Please log in.');
                     res.redirect('/login');
+
+                    // Send email after redirect (non-blocking)
+                    courier.send({
+                       message: {
+                            to: { email: email },
+                            content: {
+                                title: "Welcome to Our App 🎉",
+                                body: "This is a test email from Courier without a template."
+                            },
+                            routing: { method: "single", channels: ["email"] }
+                            }
+                    })
+                    .then((result) => console.log("Signup email sent :", result))
+                    .catch(err => console.log("Courier error:", err));
                 })
                 .catch(saveErr => {
                     console.log('User save error:', saveErr);
