@@ -8,7 +8,7 @@
    <%- include('../includes/navigation.ejs') %>
 
     <main>
-        <form class="product-form" action="/admin/<% if (editing) { %>edit-product<% } else { %>add-product<% } %>" method="POST">
+        <form class="product-form" action="/admin/<% if (editing) { %>edit-product<% } else { %>add-product<% } %>" method="POST" enctype="multipart/form-data">
             <!-- Flash Messages at top of form -->
             <% if (errorMessage) { %>
                 <div class="error-message show" style="margin-bottom: 20px;">
@@ -29,12 +29,21 @@
                        value="<% if (oldInput.title !== undefined) { %><%= oldInput.title %><% } else if (editing && product) { %><%= product.title %><% } %>"
                        class="<% if (locals.fieldErrors && locals.fieldErrors.title) { %>error-field<% } %>">
             </div>
-            <div class="form-control">
-                <label for="imageUrl">Image URL</label>
-                <input type="text" name="imageUrl" id="imageUrl" 
-                       value="<% if (oldInput.imageUrl !== undefined) { %><%= oldInput.imageUrl %><% } else if (editing && product) { %><%= product.imageUrl %><% } %>"
-                       class="<% if (locals.fieldErrors && locals.fieldErrors.imageUrl) { %>error-field<% } %>">
+             <div class="form-control">
+                <label for="image">Product Image</label>
+                <input type="file" name="image" id="image" accept="image/*"
+                    class="<% if (locals.fieldErrors && locals.fieldErrors.imageUrl) { %>error-field<% } %>">
+
+                <% if (editing && product.imageUrl) { %>
+                    <p>Current Image:</p>
+                    <p>Image path: /<%= product.imageUrl %></p>
+                    <img src="/<%= product.imageUrl %>" alt="<%= product.title %>" style="max-width:150px;">
+                    <small style="color: #666; font-size: 0.85em;">Upload a new image to replace the current one</small>
+                <% } else { %>
+                    <small style="color: #666; font-size: 0.85em;">Choose an image file from your computer</small>
+                <% } %>
             </div>
+
             <div class="form-control">
                 <label for="price">Price</label>
                 <input type="number" name="price" id="price" step="0.01" 

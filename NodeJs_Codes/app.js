@@ -2,8 +2,8 @@ const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 const session = require('express-session');
-const errorController = require('./controllers/error');
 require('dotenv').config();
+const multer = require('multer'); // For handling file uploads
 
 const MongoDBStore = require('connect-mongodb-session')(session); // For storing sessions in MongoDB
 
@@ -22,6 +22,8 @@ const store = new MongoDBStore({
   collection: 'sessions'
 });
 
+
+
 const csrfProtection = csrf();
 
 app.set('view engine', 'ejs');
@@ -31,12 +33,39 @@ const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
 const authRoutes = require('./routes/auth');
 const User = require('./models/user');
+const errorController = require('./controllers/error');
+
 
 // Middleware to parse the body of incoming requests
 
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(express.static(path.join(__dirname, 'public')));
 
+// Configure multer for file uploads
+const fileStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+        cb(null, path.join(__dirname, 'public', 'images')); // ✅ correct path
+  },
+  filename: (req, file, cb) => {
+    cb(null, new Date().toISOString().replace(/:/g, '-') + '-' + file.originalname);
+  }
+});
+// To filter files and accept only images
+const fileFilter = (req, file, cb) => {
+  if (
+    file.mimetype === 'image/png' ||
+    file.mimetype === 'image/jpg' ||
+    file.mimetype === 'image/jpeg'
+  ) {
+    cb(null, true);
+  } else {
+    cb(null, false);
+  }
+};
+
+
+app.use(multer({ storage: fileStorage, fileFilter: fileFilter }).single('image'));
+app.use(express.static(path.join(__dirname, 'public')));
+app.use('/images', express.static(path.join(__dirname, 'public/images')));
 // Session middleware
 app.use(session({
   secret: 'mysecret',
