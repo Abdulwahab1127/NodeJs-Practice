@@ -3,6 +3,7 @@ const User = require('../models/user');
 const Order = require('../models/order');
 const path = require('path');
 const fs = require('fs');
+const PDFDocument = require('pdfkit');
 
 exports.getProducts = (req, res, next) => {
   Product.find()
@@ -215,23 +216,55 @@ exports.getOrders = (req, res, next) => {
 };
 
 exports.getInvoice = (req, res, next) => {
-  if (!req.session.isLoggedIn) {
-    req.flash('error', 'Please log in to view the invoice.');
-    return res.redirect('/login');
-  }
-  
 
   const orderId = req.params.orderId;
-  const invoiceName = 'invoice-' + orderId + '.pdf';
+
+  Order.findById(orderId)
+  .then(order => {
+    if (!order) {
+      return next(new Error('No order found.'));
+    }
+    if (order.user.userId.toString() !== req.user._id.toString()) {
+      return next(new Error('Unauthorized access to invoice.'));
+    }
+      const invoiceName = 'invoice-' + orderId + '.pdf';
   const invoicePath = path.join('data', 'invoices', invoiceName); // Path to the invoice file
 
-  fs.readFile(invoicePath, (err, data) => {
-    if (err) {
-      console.log(err);
-      return res.status(404).send('Invoice not found.');
-    }
-    res.setHeader('Content-Type', 'application/pdf'); // Set the content type to PDF 
-    res.setHeader('Content-Disposition', 'inline; filename="' + invoiceName + '"'); // Display inline in browser 
-    res.send(data);
-  });
+
+
+  const pdfDoc = new PDFDocument();
+  res.setHeader('Content-Type', 'application/pdf'); // Set the content type to PDF 
+  res.setHeader('Content-Disposition', 'inline; filename="' + invoiceName + '"'); // Display inline in browser 
+  pdfDoc.pipe(fs.createWriteStream(invoicePath));
+  pdfDoc.pipe(res);
+
+  pdfDoc.text('Invoice', { align: 'center', underline: true });
+  pdfDoc.moveDown();
+  pdfDoc.text('---------------------------------------------------------------------------------------------------------------------');
+  pdfDoc.moveDown();
+  pdfDoc.text('Your Order No is: ' + orderId, { align: 'left' , fontSize: 20});
+
+  pdfDoc.moveDown();
+  pdfDoc.text('Items: ', {fontSize: 16 });
+  pdfDoc.moveDown();
+  pdfDoc.end();
+
+  // fs.readFile(invoicePath, (err, data) => {
+  //   if (err) {
+  //     console.log(err);
+  //     return res.status(404).send('Invoice not found.');
+  //   }
+  //   res.setHeader('Content-Type', 'application/pdf'); // Set the content type to PDF 
+  //   res.setHeader('Content-Disposition', 'inline; filename="' + invoiceName + '"'); // Display inline in browser 
+  //   res.send(data);
+  // });
+    
+  // const file = fs.createReadStream(invoicePath);
+
+  // file.pipe(res); // Stream the file to the response
+    
+  })
+  .catch(err => next(err));
+
+  
 };  
