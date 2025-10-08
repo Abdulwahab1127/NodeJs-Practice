@@ -177,17 +177,31 @@ exports.postEditProduct = (req, res, next) => {
     });
 };
 
-
-
-
 exports.postDeleteProduct = (req, res, next) => {
   const prodId = req.body.productId;
 
-  Product.deleteOne({ _id: prodId, userId: req.session.user._id }) // Ensure only the owner can delete
+  Product.findById(prodId)
+    .then(product => {
+      if (!product) {
+        console.log('Product not found!');
+        return res.redirect('/admin/products');
+      }
+
+      // Delete the image file from storage
+      if (product.imageUrl) {
+        // Adjust path to point to 'public' folder
+        const imagePath = path.join(__dirname, '..', 'public', product.imageUrl);
+        fs.unlink(imagePath, err => {
+          if (err) console.log('Failed to delete image file:', err);
+        });
+      }
+
+      // Delete the product from DB
+      return Product.deleteOne({ _id: prodId, userId: req.session.user._id });
+    })
     .then(() => {
       console.log('DESTROYED PRODUCT');
       res.redirect('/admin/products');
-    }) 
+    })
     .catch(err => console.log(err));
 };
-
