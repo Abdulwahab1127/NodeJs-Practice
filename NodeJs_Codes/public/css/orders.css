@@ -1,30 +1,143 @@
 main {
-  max-width: 1000px;
+  max-width: 1200px;
   margin: 2rem auto;
   padding: 0 1rem;
 }
 
 .order-card {
-  border: 1px solid #ccc;
-  border-radius: 10px;
+  border: none;
+  border-radius: 15px;
   margin-bottom: 2rem;
-  padding: 1rem 1.5rem;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  background-color: #fff;
+  padding: 2rem;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+  background: linear-gradient(145deg, #ffffff, #f8f9fa);
+  border-left: 5px solid #00d4aa;
 }
 
-.order-card h2 {
-  margin-bottom: 1rem;
-  font-size: 1.3rem;
+.order-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #eee;
+}
+
+.order-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
   color: #333;
+  font-weight: 600;
+}
+
+.order-meta {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.order-date {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.order-status {
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.status-pending { background: #fff3cd; color: #856404; }
+.status-confirmed { background: #d1ecf1; color: #0c5460; }
+.status-shipped { background: #d4edda; color: #155724; }
+.status-delivered { background: #d1ecf1; color: #0c5460; }
+
+.order-items {
+  margin-bottom: 1.5rem;
 }
 
 .order-item {
   display: flex;
   align-items: center;
   gap: 1rem;
-  padding: 0.5rem 0;
+  padding: 1rem 0;
   border-bottom: 1px solid #eee;
+}
+
+.item-image {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.item-details h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.1rem;
+  color: #333;
+}
+
+.item-price {
+  color: #666;
+  margin: 0.2rem 0;
+}
+
+.item-total {
+  color: #00d4aa;
+  font-weight: 600;
+  margin: 0.2rem 0;
+}
+
+.shipping-info, .payment-info {
+  background: #f8f9fa;
+  padding: 1rem;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+}
+
+.shipping-info h4, .payment-info h4 {
+  margin: 0 0 0.5rem 0;
+  color: #333;
+  font-size: 1rem;
+}
+
+.shipping-info p, .payment-info p {
+  margin: 0.2rem 0;
+  color: #555;
+}
+
+.order-total {
+  text-align: right;
+  margin: 1.5rem 0;
+  padding: 1rem 0;
+  border-top: 2px solid #00d4aa;
+}
+
+.order-total h3 {
+  margin: 0;
+  font-size: 1.3rem;
+  color: #00d4aa;
+}
+
+.order-actions {
+  text-align: right;
+}
+
+.invoice-btn {
+  background: linear-gradient(135deg, #007bff, #0056b3);
+  color: white;
+  padding: 10px 20px;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.invoice-btn:hover {
+  background: linear-gradient(135deg, #0056b3, #004085);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
 }
 
 .order-item:last-child {

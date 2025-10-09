@@ -35,10 +35,13 @@
                         </li>
                     <% }) %>
                 </ul>
-                <form class="cart__order-form" action="/create-order" method="POST">
-                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                    <button class="submit-order" type="submit">Order Now</button>
-                </form>
+                <div class="cart__checkout-actions">
+                    <a href="/checkout" class="btn checkout-btn">🛒 Proceed to Checkout</a>
+                    <form class="cart__order-form" action="/create-order" method="POST" style="display: inline;">
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                        <button class="submit-order" type="submit" style="margin-left: 10px;">Quick Order (Skip Details)</button>
+                    </form>
+                </div>
             <% } else { %>
                 <h1>No Products in Cart!</h1>
             <% } %>
