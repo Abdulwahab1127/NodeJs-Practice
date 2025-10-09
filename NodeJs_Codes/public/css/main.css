@@ -16,6 +16,9 @@ main {
   margin: auto;
 }
 
+.grid {
+  margin: 4rem auto 2rem auto; /* top 4rem, bottom 2rem, center horizontally */
+}
 form {
   display: inline;
 }
@@ -157,10 +160,37 @@ form {
 }
 
 .grid {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-around;
-  align-items: stretch;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+/* Responsive grid - 3 columns on tablet */
+@media (max-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+}
+
+/* Responsive grid - 2 columns on mobile */
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    padding: 1rem;
+  }
+}
+
+/* Single column on very small screens */
+@media (max-width: 480px) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
 }
 
 .card {
@@ -223,6 +253,27 @@ form {
 .btn.danger:hover,
 .btn.danger:active {
   background: red;
+  color: white;
+}
+
+.pagination {
+  text-align: center;
+  margin: 2rem 0;
+}
+
+.pagination a {
+  text-decoration: none;
+  color: #2575fc;
+  border: 1px solid #2575fc;
+  padding: 0.5rem 0.75rem;
+  margin: 0 0.25rem;
+  border-radius: 3px;
+}
+
+.pagination a:hover,
+.pagination a:active,
+.pagination a.active {
+  background: #2575fc;
   color: white;
 }
 
