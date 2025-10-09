@@ -186,6 +186,10 @@ exports.postDeleteProduct = (req, res, next) => {
     .then(product => {
       if (!product) {
         console.log('Product not found!');
+        // Check if it's an AJAX request
+        if (req.xhr || req.headers.accept.indexOf('json') > -1) {
+          return res.status(404).json({ error: 'Product not found!' });
+        }
         return res.redirect('/admin/products');
       }
 
@@ -203,7 +207,18 @@ exports.postDeleteProduct = (req, res, next) => {
     })
     .then(() => {
       console.log('DESTROYED PRODUCT');
+      // Check if it's an AJAX request
+      if (req.xhr || req.headers.accept.indexOf('json') > -1) {
+        return res.json({ success: true, message: 'Product deleted successfully!' });
+      }
       res.redirect('/admin/products');
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      console.log(err);
+      // Check if it's an AJAX request
+      if (req.xhr || req.headers.accept.indexOf('json') > -1) {
+        return res.status(500).json({ error: 'Failed to delete product!' });
+      }
+      res.redirect('/admin/products');
+    });
 };

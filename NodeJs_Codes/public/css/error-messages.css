@@ -15,7 +15,7 @@
     position: relative;
     overflow: hidden;
     animation: slideInError 0.4s ease-out;
-    transition: all 0.3s ease;
+    transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 /* Hover effect */
@@ -47,7 +47,7 @@
     position: relative;
     overflow: hidden;
     animation: slideInSuccess 0.4s ease-out;
-    transition: all 0.3s ease;
+    transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 .success-message:hover {
